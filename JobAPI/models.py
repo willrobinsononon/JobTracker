@@ -21,3 +21,4 @@ class Interview(models.Model):
     scheduled_time = models.DateTimeField()
     location = models.CharField(max_length = 128)
     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name = "interviews")
+
