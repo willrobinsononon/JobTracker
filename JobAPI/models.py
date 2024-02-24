@@ -5,8 +5,8 @@ class Application(models.Model):
     STATUS_CHOICES = {
     "APL": "Applied",
     "INT": "Interview Booked",
-    "SCS": "SUCCESSFUL",
-    "UNS": "UNSUCCESSFUL"
+    "SCS": "Successful",
+    "UNS": "Unsuccessful"
     }
     
     date_applied = models.DateField()
@@ -20,5 +20,6 @@ class Application(models.Model):
 class Interview(models.Model):
     scheduled_time = models.DateTimeField()
     location = models.CharField(max_length = 128)
+    notes = models.TextField()
     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name = "interviews")
 

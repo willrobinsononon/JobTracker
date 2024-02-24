@@ -1,0 +1,14 @@
+from rest_framework import routers
+from JobAPI.views import ApplicationViewSet, InterviewViewSet, UserViewSet
+from django.urls import path, include
+
+
+
+router = routers.DefaultRouter()
+router.register(r'applications', ApplicationViewSet)
+router.register(r'interviews', InterviewViewSet)
+router.register(r'users', UserViewSet)
+
+urlpatterns = [
+    path('', include(router.urls))
+]
