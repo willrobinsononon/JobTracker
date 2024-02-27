@@ -1,0 +1,26 @@
+.job-nav {
+    display: flex;
+    width: 100%;
+    
+}
+
+.job-logo-link {
+    flex-grow: 4;
+    text-align: center;
+}
+
+.job-logo {
+    width: 285px;
+}
+
+.job-nav-link {
+    padding: 15px;
+    text-align: center;
+    font-size: 16px;
+    width: 15%;
+}
+
+.job-nav-spacer {
+    width: 15%;
+}
+
