@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  cache: false,
   entry: './js/index.js',  // path to our input file
   output: {
     filename: 'app-bundle.js',  // output bundle file name

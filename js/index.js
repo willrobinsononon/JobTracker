@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from "react-dom";
+import ApplicationList from './applicationList'
 
 ReactDOM.render(
-  <h1>Hello, react!</h1>,
+  < ApplicationList />,
   document.getElementById('root')
 );

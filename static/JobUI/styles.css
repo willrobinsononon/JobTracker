@@ -24,3 +24,17 @@
     width: 15%;
 }
 
+.applicationContainer {
+    display: flex;
+}
+
+.applicationHeader {
+    display: flex;
+}
+.jobTitle {
+    flex-grow: 1;
+}
+
+.employer {
+    flex-grow: 1;
+}

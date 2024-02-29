@@ -1,6 +1,8 @@
+import React from 'react';
+
 export default function ApplicationCard({ application }) {
     return (
-        <div className = "applicationContainer">
+        <div className = "applicationContainer" data-app_id={ application.id }>
             <div className = "applicationHeader">
                 <span className = "jobTitle">{ application.job_title}</span>
                 <span className = "employerName">{ application.employer }</span>
@@ -9,9 +11,7 @@ export default function ApplicationCard({ application }) {
                 <div className = "status">
                     { application.status }
                 </div>
-                <textarea className = "Notes">
-                    { application.notes }
-                </textarea>
+                <textarea className = "Notes" value={ application.notes } readOnly></textarea>
             </div>
         </div>
     )

@@ -5,14 +5,15 @@ from django.contrib.auth.models import User
 class InterviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interview
-        fields = ['scheduled_time', 'location', 'notes']
+        fields = ['id', 'scheduled_time', 'location', 'notes']
 
 class ApplicationSerializer(serializers.ModelSerializer):
     interviews = InterviewSerializer(many=True, read_only=True)
+    status = serializers.CharField(source='get_status_display')
 
     class Meta:
         model = Application
-        fields = ['date_applied', 'job_title', 'employer', 'notes', 'followed_up', 'status', 'interviews']
+        fields = ['id', 'date_applied', 'job_title', 'employer', 'notes', 'followed_up', 'status', 'interviews']
 
 class UserSerializer(serializers.ModelSerializer):
     applications = ApplicationSerializer(many=True, read_only=True)
