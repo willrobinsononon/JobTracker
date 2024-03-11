@@ -1,40 +1,88 @@
-.job-nav {
-    display: flex;
-    width: 100%;
-    
-}
-
-.job-logo-link {
-    flex-grow: 4;
-    text-align: center;
-}
+.navbar-custom {
+    height: 100px;
+  }
 
 .job-logo {
-    width: 285px;
+    height: 100px;
 }
 
-.job-nav-link {
-    padding: 15px;
-    text-align: center;
-    font-size: 16px;
-    width: 15%;
+.navbar-brand {
+    transform: translateX(-50%);
+    left: 50%;
+    position: absolute;
+  }
+  
+.logout-nav {
+    width: 100%;
+    height: 100%;
 }
 
-.job-nav-spacer {
-    width: 15%;
+.form-group {
+    padding: 5px 0px;
 }
 
-.applicationContainer {
-    display: flex;
+.application-container {
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px lightgrey;
 }
 
-.applicationHeader {
-    display: flex;
-}
-.jobTitle {
-    flex-grow: 1;
+.application-header {
+
 }
 
-.employer {
-    flex-grow: 1;
+.job-title {
+    font-size: 2em;
+    font-weight: 600;
+}
+
+.employer-name {
+    font-size: 1em;
+    color: darkslategrey;
+    font-weight: 200;
+}
+
+.notes-textarea {
+    width: 100%;
+    resize: none;
+}
+
+.inner-bdr {
+    border-color: lightgrey;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+.current-status {
+    font-weight: 350!important;
+}
+
+.status-final {
+    font-weight: 500!important;
+}
+
+.status-App {
+    background-color: lightgrey;
+}
+
+.status-Int {
+    background-color: lightblue;
+}
+
+.status-Suc {
+    background-color: lightgreen;
+}
+
+.status-Uns {
+    background-color: indianred;
+}
+
+.inner-title {
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.edit-image {
+    height: 1.2em;
+    cursor: pointer;
 }
