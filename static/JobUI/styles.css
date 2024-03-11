@@ -27,10 +27,6 @@
     box-shadow: 1px 1px 3px lightgrey;
 }
 
-.application-header {
-
-}
-
 .job-title {
     font-size: 2em;
     font-weight: 600;
@@ -82,7 +78,18 @@
     font-weight: 500;
 }
 
-.edit-image {
+.icon-button {
     height: 1.2em;
     cursor: pointer;
+}
+
+.edit-input-text {
+    border-radius: 5px;
+    border-width: 0px;
+    background-color: rgba(255, 255, 255, 0);
+    padding: 0px;
+}
+
+.int-input {
+    width: 100%;
 }

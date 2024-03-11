@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function InterviewTableRow({ interview }) {
+export default function InterviewTableRow({ interview, mode}) {
     const [date, setDate] = useState("");
 
     useEffect (() => {
@@ -17,11 +17,23 @@ export default function InterviewTableRow({ interview }) {
         setDate(  hours + ':' + minutes + suffix + ", " +  day + "/" + month + "/" + year );
     })
 
-    return (
-        <tr>
-        <td>{ date.toLocaleString() }</td>
-        <td>{ interview.location }</td>
-        <td>{ interview.notes }</td>
-        </tr>
-    )
+    if ( mode === 'view') {
+        return (
+            <tr>
+            <td>{ date.toLocaleString() }</td>
+            <td>{ interview.location }</td>
+            <td>{ interview.notes }</td>
+            </tr>
+        )
+    }
+    else {
+        return (
+            <tr>
+            <td><input type="text" name="date" className="int-input edit-input-text" defaultValue={ date.toLocaleString() }></input></td>
+            <td><input type="text" name="location" className="int-input edit-input-text" defaultValue={ interview.location }></input></td>
+            <td><input type="text" name="interview-notes" className="int-input edit-input-text" defaultValue={ interview.notes }></input></td>
+            </tr>
+        )
+    }
+    
 }
