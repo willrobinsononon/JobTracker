@@ -54,9 +54,14 @@ export default function ApplicationCard({ application }) {
         else {
             return (
                 <div className = "row">
-                    <input type="text" id="app-status" className = "current-status col-6 inner-title edit-input-text" defaultValue={ application.status }>
-                    </input>
+                    <select name="status" id="app-status" className = "current-status col-6 inner-title edit-input-text">
+                        <option value="APL" selected={ application.status === "Applied"}>Applied</option>
+                        <option value="INT" selected={ application.status === "Interview Booked"}>Interview Booked</option>
+                        <option value="SCS" selected={ application.status === "Success"}>Success</option>
+                        <option value="UNS" selected={ application.status === "Unsuccessful"}>Unsuccessful</option>
+                    </select>
                     <div className = "col-6 text-end">
+                        <span className="inner-title">Editing    </span>
                         <img className="icon-button" data-application-id={ application.id } src="/static/assets/submit.png" title="submit button" onClick={editClick}></img>
                     </div>
                 </div>
@@ -78,7 +83,7 @@ export default function ApplicationCard({ application }) {
     }
 
     return (
-        <div className = {"application-container container-fluid my-2 status-" + application.status.slice(0, 3)} data-app_id={ application.id }>
+        <div className = {"application-container container-fluid my-2 " + (mode === 'view' ? "status-" +application.status.slice(0, 3) : "") } data-app_id={ application.id }>
             { renderHeader() }
             <div className = "application-body">
                 { renderStatusRow()}
