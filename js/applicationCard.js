@@ -19,79 +19,56 @@ export default function ApplicationCard({ application }) {
         }
     }
 
-    function renderHeader() {
-        if (mode === 'view') {
-            return (
-                <div className = "application-header row">
-                    <div className = "job-title col-6">{ application.job_title}</div>
-                    <div className = "employer-name col-6 mt-auto text-end">{ application.employer }</div>
-                </div>
-            )
-        }
-        else {
-            return (
-                <div className = "application-header row">
-                    <input type="text" id="app-title" className = "job-title col-6 edit-input-text" defaultValue={ application.job_title }></input>
-                    <input type="text" id="app-employer" className = "employer-name col-6 mt-auto text-end edit-input-text" defaultValue={ application.employer }></input>
-                </div>
-            )
-        }
+    const initialValues = {
+        job_title: application.job_title,
+        employer: application.employer,
+        status: application.status,
+        notes: application.notes
     }
 
-    function renderStatusRow() {
-        if (mode === 'view') {
-            return (
-                <div className = "row">
-                    <div className = {"current-status col-6 inner-title " + statusClass}>
-                        { application.status }
-                    </div>
-                    <div className = "col-6 text-end">
-                        <img className="icon-button" data-application-id={ application.id } src="/static/assets/edit.png" title="edit button" onClick={editClick}></img>
-                    </div>
-                </div>
-            )
-        }
-        else {
-            return (
-                <div className = "row">
-                    <select name="status" id="app-status" className = "current-status col-6 inner-title edit-input-text">
-                        <option value="APL" selected={ application.status === "Applied"}>Applied</option>
-                        <option value="INT" selected={ application.status === "Interview Booked"}>Interview Booked</option>
-                        <option value="SCS" selected={ application.status === "Success"}>Success</option>
-                        <option value="UNS" selected={ application.status === "Unsuccessful"}>Unsuccessful</option>
-                    </select>
-                    <div className = "col-6 text-end">
-                        <span className="inner-title">Editing    </span>
-                        <img className="icon-button" data-application-id={ application.id } src="/static/assets/submit.png" title="submit button" onClick={editClick}></img>
-                    </div>
-                </div>
-            )
-        }
-    }
+    const [appData, setAppData] = useState(initialValues)
 
-    function renderNotes() {
+    function renderModeButton() {
         if (mode === 'view') {
             return (
-                <textarea className = "notes-textarea inner-bdr my-2" defaultValue={ application.notes } readOnly></textarea>
+                <div className = "col-6 text-end">
+                    <img className="icon-button" data-application-id={ application.id } src="/static/assets/edit.png" title="edit button" onClick={editClick}></img>
+                </div>
             )
         }
         else {
-            return(
-                <textarea className = "notes-textarea inner-bdr my-2" defaultValue={ application.notes }></textarea>
+            return (
+                <div className = "col-6 text-end">
+                    <span className="inner-title">Editing    </span>
+                    <img className="icon-button" data-application-id={ application.id } src="/static/assets/submit.png" title="submit button" onClick={editClick}></img>
+                </div>
             )
         }
     }
 
     return (
         <div className = {"application-container container-fluid my-2 " + (mode === 'view' ? "status-" +application.status.slice(0, 3) : "") } data-app_id={ application.id }>
-            { renderHeader() }
+            <div className = "application-header row">
+                <input type="text" id="app-title" className = "job-title col-6 edit-input-text" value={ appData.job_title } disabled={ mode === "view" }></input>
+                <input type="text" id="app-employer" className = "employer-name col-6 mt-auto text-end edit-input-text" value={ appData.employer } disabled={ mode === "view" }></input>
+            </div>
             <div className = "application-body">
-                { renderStatusRow()}
+                <div className = "row">
+                    <div className="current-status col-6 inner-title">
+                        <select title="status" name="status" id="app-status" className = "edit-input-text status-select" value = { appData.status } disabled={ mode === "view" }>
+                            <option value="Applied" >Applied</option>
+                            <option value="Interview Booked" >Interview Booked</option>
+                            <option value="Success" >Success</option>
+                            <option value="Unsuccessful" >Unsuccessful</option>
+                        </select>
+                    </div>
+                    { renderModeButton() }
+                </div>
                 <hr className="mt-3 mx-2" />
                 <div className = "row my-2">
                     <div className = "status col-12">
                         <span className="inner-title">Notes:</span>
-                        { renderNotes() }
+                        <textarea className = "notes-textarea inner-bdr my-2" value={ application.notes } readOnly={ mode === "view" }></textarea>
                     </div>
                 </div>
                 <div className = "row">

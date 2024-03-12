@@ -93,3 +93,11 @@
 .int-input {
     width: 100%;
 }
+
+.status-select {
+    width: 50%;
+}
+
+option {
+    padding: 0px;
+}
