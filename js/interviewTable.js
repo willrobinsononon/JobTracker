@@ -1,7 +1,7 @@
 import React from 'react';
 import InterviewTableRow from './interviewTableRow'
 
-export default function InterviewTable({ interviews, mode }) {
+export default function InterviewTable({ interviews }) {
 
     return (
         <table className="table interview-table inner-bdr my-2">

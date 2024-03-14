@@ -33,7 +33,7 @@
 }
 
 .employer-name {
-    font-size: 1em;
+    font-size: 1.2em;
     color: darkslategrey;
     font-weight: 200;
 }
@@ -96,8 +96,15 @@
 
 .status-select {
     width: 50%;
+    
 }
 
 option {
     padding: 0px;
+    color: inherit;
+    font-weight: inherit;
+}
+
+input:disabled {
+    color: inherit;
 }
