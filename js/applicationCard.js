@@ -18,7 +18,6 @@ export default function ApplicationCard({ application }) {
     const [mode, setMode] = useState('view');
 
     function submit() {
-        console.log(appData.status)
 
         fetch(`jobapi/applications/${application.id}/`, {
             method: 'PUT',

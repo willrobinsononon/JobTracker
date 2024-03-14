@@ -9,7 +9,6 @@ class ChoiceField(serializers.ChoiceField):
 
     def to_internal_value(self, data):
         for key, val in Application.STATUS_CHOICES.items():
-            print('key: ' + key + '\nval: ' + val + '\ndata: ' + data)
             if val == data:
                 return key
 
