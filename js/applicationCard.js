@@ -16,30 +16,6 @@ export default function ApplicationCard({ application }) {
     const [appData, setAppData] = useState(appInitialValues);
     const [mode, setMode] = useState('view');
 
-    function renderStatusRow() {
-        if (mode === 'edit') {
-            return (
-                <div className = "row">
-                    <StatusColumn mode = { mode } status = { appData.status } setAppData = { setAppData }/>
-                    <div className = "col-6 text-end">
-                        <span className="inner-title">Editing    </span>
-                        <SubmitButton setMode = { setMode } submit = { test }/>
-                    </div>
-                </div>
-            )
-        }
-        else {
-            return (
-                <div className = "row">
-                    <StatusColumn mode = { mode } status = { appData.status } setAppData = { setAppData }/>
-                    <div className = "col-6 text-end">
-                        <EditButton setMode = { setMode }/>
-                    </div>
-                </div>
-            )
-        }
-    }
-
     function submit() {
         
         fetch(`jobapi/applications/${application.id}`, {
@@ -78,6 +54,30 @@ export default function ApplicationCard({ application }) {
             setAppData({ ...appData, [event.target.name]: event.target.value });
         }
       };
+
+    function renderStatusRow() {
+        if (mode === 'edit') {
+            return (
+                <div className = "row">
+                    <StatusColumn mode = { mode } appData = { appData } setAppData = { setAppData }/>
+                    <div className = "col-6 text-end">
+                        <span className="inner-title">Editing    </span>
+                        <SubmitButton setMode = { setMode } submit = { test }/>
+                    </div>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div className = "row">
+                    <StatusColumn mode = { mode } appData = { appData } setAppData = { setAppData }/>
+                    <div className = "col-6 text-end">
+                        <EditButton setMode = { setMode }/>
+                    </div>
+                </div>
+            )
+        }
+    }
 
     return (
         <div className = {"application-container container-fluid my-2 " + (mode === 'view' ? "status-" +appData.status.slice(0, 3) : "") } data-app_id={ application.id }>
