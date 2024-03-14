@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import InterviewTable from './interviewTable'
-import EditButton from './editButton'
-import SubmitButton from './submitButton'
+import InterviewTable from './interviewTable';
+import EditButton from './editButton';
+import SubmitButton from './submitButton';
+import StatusColumn from './statusColumn';
 
 export default function ApplicationCard({ application }) {
-    
-    function getStatusClass(status) {
-        if (status === "Unsuccessful" || status === "Success") {
-            return "status-final"
-        }
-        else {
-            return ""
-        }
-    }
     
     const appInitialValues = {
         job_title: application.job_title,
@@ -23,17 +15,15 @@ export default function ApplicationCard({ application }) {
 
     const [appData, setAppData] = useState(appInitialValues);
     const [mode, setMode] = useState('view');
-    const [statusClass, setStatusClass] = useState(getStatusClass(application.status));
 
     function renderStatusRow() {
-        if (mode === 'view') {
+        if (mode === 'edit') {
             return (
                 <div className = "row">
-                    <div className = {"current-status col-6 inner-title " + statusClass}>
-                        { application.status }
-                    </div>
+                    <StatusColumn mode = { mode } status = { appData.status } setAppData = { setAppData }/>
                     <div className = "col-6 text-end">
-                        <EditButton setMode = { setMode }/>
+                        <span className="inner-title">Editing    </span>
+                        <SubmitButton setMode = { setMode } submit = { test }/>
                     </div>
                 </div>
             )
@@ -41,17 +31,9 @@ export default function ApplicationCard({ application }) {
         else {
             return (
                 <div className = "row">
-                    <div className="current-status col-6 inner-title">
-                        <select title="status" className = "edit-input-text status-select" name="status" value = { appData.status } onChange={ ChangeHandle }>
-                            <option value="Applied" >Applied</option>
-                            <option value="Interview Booked" >Interview Booked</option>
-                            <option value="Success" >Success</option>
-                            <option value="Unsuccessful" >Unsuccessful</option>
-                        </select>
-                    </div>
+                    <StatusColumn mode = { mode } status = { appData.status } setAppData = { setAppData }/>
                     <div className = "col-6 text-end">
-                        <span className="inner-title">Editing    </span>
-                        <SubmitButton setMode = { setMode } submit = { test }/>
+                        <EditButton setMode = { setMode }/>
                     </div>
                 </div>
             )
@@ -92,11 +74,7 @@ export default function ApplicationCard({ application }) {
 
 
     const ChangeHandle = (event) => {
-        
         if (mode === "edit") {
-            if (event.target.name === "status") {
-                setStatusClass(getStatusClass(event.target.value));                
-            }
             setAppData({ ...appData, [event.target.name]: event.target.value });
         }
       };

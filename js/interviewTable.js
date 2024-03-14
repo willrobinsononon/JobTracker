@@ -10,10 +10,11 @@ export default function InterviewTable({ interviews }) {
             <th scope="col" className="col-2">Time</th>
             <th scope="col" className="col-5">Location</th>
             <th scope="col" className="col-5">Notes</th>
+            <th scope="col" className="col-auto"></th>
             </tr>
         </thead>
         <tbody>
-            { interviews.map( interview => <InterviewTableRow key={ interview.id } interview={ interview } mode={ mode } />) }
+            { interviews.map( interview => <InterviewTableRow key={ interview.id } interview={ interview }/>) }
         </tbody>
         </table>
     )
