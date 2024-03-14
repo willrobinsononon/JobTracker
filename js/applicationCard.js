@@ -3,6 +3,7 @@ import InterviewTable from './interviewTable';
 import EditButton from './editButton';
 import SubmitButton from './submitButton';
 import StatusColumn from './statusColumn';
+import cookie from "react-cookies";
 
 export default function ApplicationCard({ application }) {
     
@@ -17,9 +18,11 @@ export default function ApplicationCard({ application }) {
     const [mode, setMode] = useState('view');
 
     function submit() {
-        
-        fetch(`jobapi/applications/${application.id}`, {
+
+        fetch(`jobapi/applications/${application.id}/`, {
             method: 'PUT',
+            headers: { 'X-CSRFToken': cookie.load("csrftoken"),
+                        'Content-Type': 'application/json'},
             body: JSON.stringify({
                 id: application.id,
                 date_applied: application.date_applied,
@@ -35,7 +38,6 @@ export default function ApplicationCard({ application }) {
     }
 
     function test() {
-        
         console.log( JSON.stringify({
                 id: application.id,
                 date_applied: application.date_applied,
@@ -62,7 +64,7 @@ export default function ApplicationCard({ application }) {
                     <StatusColumn mode = { mode } appData = { appData } setAppData = { setAppData }/>
                     <div className = "col-6 text-end">
                         <span className="inner-title">Editing    </span>
-                        <SubmitButton setMode = { setMode } submit = { test }/>
+                        <SubmitButton setMode = { setMode } submit = { submit }/>
                     </div>
                 </div>
             )
