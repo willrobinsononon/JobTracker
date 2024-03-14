@@ -2,6 +2,17 @@ from rest_framework import serializers
 from JobAPI.models import Application, Interview
 from django.contrib.auth.models import User
 
+class ChoiceField(serializers.ChoiceField):
+
+    def to_representation(self, instance):
+        return Application.STATUS_CHOICES[instance]
+
+    def to_internal_value(self, data):
+        for key, val in Application.STATUS_CHOICES.items():
+            print('key: ' + key + '\nval: ' + val + '\ndata: ' + data)
+            if val == data:
+                return key
+
 class InterviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interview
@@ -9,7 +20,7 @@ class InterviewSerializer(serializers.ModelSerializer):
 
 class ApplicationSerializer(serializers.ModelSerializer):
     interviews = InterviewSerializer(many=True, read_only=True)
-    status = serializers.CharField(source='get_status_display')
+    status = ChoiceField(choices=Application.STATUS_CHOICES)
 
     class Meta:
         model = Application

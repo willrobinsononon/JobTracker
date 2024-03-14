@@ -18,6 +18,7 @@ export default function ApplicationCard({ application }) {
     const [mode, setMode] = useState('view');
 
     function submit() {
+        console.log(appData.status)
 
         fetch(`jobapi/applications/${application.id}/`, {
             method: 'PUT',
@@ -36,20 +37,6 @@ export default function ApplicationCard({ application }) {
           .then(response => response.json())
           .then(result => {console.log(result)});
     }
-
-    function test() {
-        console.log( JSON.stringify({
-                id: application.id,
-                date_applied: application.date_applied,
-                job_title: appData.job_title,
-                employer: appData.employer,
-                notes: appData.notes,
-                followed_up: application.followed_up,
-                status: appData.status
-            }))
-
-    }
-
 
     const ChangeHandle = (event) => {
         if (mode === "edit") {

@@ -31,7 +31,7 @@ export default function StatusColumn({ mode, appData, setAppData }) {
                 <select title="status" className = "edit-input-text status-select" name="status" value = { appData.status } onChange={ ChangeStatusHandle }>
                     <option value="Applied" >Applied</option>
                     <option value="Interview Booked" >Interview Booked</option>
-                    <option value="Success" >Success</option>
+                    <option value="Successful" >Successful</option>
                     <option value="Unsuccessful" >Unsuccessful</option>
                 </select>
             </div>
