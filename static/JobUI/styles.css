@@ -108,3 +108,27 @@ option {
 input:disabled {
     color: inherit;
 }
+
+input:disabled {
+    cursor: default;
+    background-color: inherit;
+    color: inherit;
+    border-color: inherit;
+    border-width: 0px;
+}
+
+table input {
+    padding: 2px;
+    border-radius: 5px;
+    border-width: 0px;
+    background-color: inherit;
+}
+
+table tr[class="edit"] > * {
+    background-color: rgb(245, 245, 245)
+}
+
+textarea:disabled {
+    background-color: white;
+    color: inherit;
+}

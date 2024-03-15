@@ -8,7 +8,6 @@ export default function ApplicationList( props ) {
         fetch('/jobapi/applications.json')
             .then(response => response.json())
             .then(result => {
-                console.log(result);
                 setApplications(result);
             })
             .catch(error => {

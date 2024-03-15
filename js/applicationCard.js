@@ -79,7 +79,7 @@ export default function ApplicationCard({ application }) {
                 <div className = "row my-2">
                     <div className = "status col-12">
                         <span className="inner-title">Notes:</span>
-                        <textarea className = "notes-textarea inner-bdr my-2" name="notes" value={ appData.notes } readOnly={ mode === "view" } onChange={ ChangeHandle }></textarea>
+                        <textarea className = "notes-textarea inner-bdr my-2" name="notes" value={ appData.notes } disabled={ mode === "view" } onChange={ ChangeHandle }></textarea>
                     </div>
                 </div>
                 <div className = "row">
