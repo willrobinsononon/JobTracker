@@ -13,40 +13,74 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
         location: interview.location,
         notes: interview.notes
     };
+    
+    var initMode = 'view'
+    if ('new' in interview) {
+        initMode = 'edit';
+    }
+
 
     const [intData, setIntData] = useState(intInitialValues);
-    const [mode, setMode] = useState('view');
+    const [mode, setMode] = useState(initMode);
     const [intDate, setIntDate] = useState(new Date(interview.scheduled_time));
 
     registerLocale("en-GB", enGB);
 
     function submit() {
+        if ( intData.location === "" ) {
+            alert("Location can't be empty");
+            return false
+        }
 
-        fetch(`jobapi/interviews/${interview.id}/`, {
-            method: 'PUT',
-            headers: { 'X-CSRFToken': cookie.load("csrftoken"),
-                        'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                id: interview.id,
-                scheduled_time: intDate,
-                location: intData.location,
-                notes: intData.notes
+        if ('new' in interview) {
+            fetch(`jobapi/interviews/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': cookie.load("csrftoken"),
+                            'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    scheduled_time: intDate,
+                    location: intData.location,
+                    notes: intData.notes,
+                    application: application.id
+                })
+              })
+              .then(response => response.json())
+              .then(result => {console.log(result)});
+        }
+        else {
+            fetch(`jobapi/interviews/${interview.id}/`, {
+                method: 'PUT',
+                headers: { 'X-CSRFToken': cookie.load("csrftoken"),
+                            'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    id: interview.id,
+                    scheduled_time: intDate,
+                    location: intData.location,
+                    notes: intData.notes
+                })
             })
-          })
-          .then(response => response.json())
-          .then(result => {console.log(result)});
+            .then(response => response.json())
+            .then(result => {console.log(result)});
+        }
+        return true
     }
 
     function onDelete() {
+
+        if ( intData.location === "" || intDate < new Date().toJSON()) {
+            removeRow(204)
+            return 
+        }
+
         fetch(`jobapi/interviews/${interview.id}/`, {
             method: 'DELETE',
             headers: { 'X-CSRFToken': cookie.load("csrftoken")},
           })
-          .then(response => removeRow(response))
+          .then(response => removeRow(response.status))
     }
 
-    function removeRow( response ) {
-        if ( response.status === 204 ) {
+    function removeRow( status ) {
+        if ( status === 204 ) {
             setInterviews(interviews.filter((item) => item.id !== interview.id))
         }
     }

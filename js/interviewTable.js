@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import InterviewTableRow from './interviewTableRow'
 
-export default function InterviewTable({ initInterviews }) {
-    const [interviews, setInterviews] = useState(initInterviews);
+export default function InterviewTable({ interviews, setInterviews }) {
     return (
         <table className="table interview-table inner-bdr my-2">
         <thead>

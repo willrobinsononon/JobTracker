@@ -3,8 +3,11 @@ import React, { useState, useEffect } from 'react';
 export default function SubmitButton({ setMode, submit }) {
 
     function submitClick() {
-        submit()
-        setMode('view');
+
+        const submitted = submit()
+        if (submitted) {
+            setMode('view');
+        }
     }
 
     return (

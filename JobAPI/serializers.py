@@ -15,7 +15,7 @@ class ChoiceField(serializers.ChoiceField):
 class InterviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interview
-        fields = ['id', 'scheduled_time', 'location', 'notes']
+        fields = ['id', 'scheduled_time', 'location', 'notes', 'application']
 
 class ApplicationSerializer(serializers.ModelSerializer):
     interviews = InterviewSerializer(many=True, read_only=True)

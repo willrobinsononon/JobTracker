@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InterviewTable from './interviewTable';
 import ButtonToggle from './buttonToggle'
 import EditingFlag from './editingFlag';
+import AddButton from './addButton';
 import StatusColumn from './statusColumn';
 import cookie from "react-cookies";
 
@@ -17,6 +18,7 @@ export default function ApplicationCard({ application, applications, setApplicat
 
     const [appData, setAppData] = useState(appInitialValues);
     const [mode, setMode] = useState('view');
+    const [interviews, setInterviews] = useState(application.interviews);
 
     function submit() {
 
@@ -34,8 +36,10 @@ export default function ApplicationCard({ application, applications, setApplicat
                 status: appData.status
             })
           })
-          .then(response => response.json())
-          .then(result => {console.log(result)});
+          {/*}.then(response => response.json())
+        .then(result => {console.log(result)});*/}
+
+        return true
     }
 
     function onDelete() {
@@ -50,6 +54,36 @@ export default function ApplicationCard({ application, applications, setApplicat
         if ( response.status === 204 ) {
             setApplications(applications.filter((item) => item.id !== application.id))
         }
+    }
+
+    function addblahblah() {
+
+        fetch(`jobapi/interviews/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': cookie.load("csrftoken"),
+                        'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                scheduled_time: "2000-01-01T00:00:00Z",
+                location: " ",
+                application: application.id
+            })
+          })
+          .then(response => addInterview(response))
+          {/*}.then(result => addInterview.result);*/}
+    }
+
+    function addInterview() {
+
+        var newInterview = {
+            id: interviews[interviews.length - 1].id + 1,
+            scheduled_time: new Date().toJSON(),
+            location: "",
+            notes: "",
+            application: application.id,
+            new: true
+        }
+
+        setInterviews([ ...interviews, newInterview ])
     }
 
     const ChangeHandle = (event) => {
@@ -74,15 +108,26 @@ export default function ApplicationCard({ application, applications, setApplicat
                 </div>
                 <hr className="mt-3 mx-2" />
                 <div className = "row my-2">
-                    <div className = "status col-12">
+                    <div className = "status col-12"> 
                         <span className="inner-title">Notes:</span>
+                    </div>
+                </div>
+                <div className = "row my-2">
+                    <div className = "status col-12">
                         <textarea className = "notes-textarea inner-bdr my-2" name="notes" value={ appData.notes } disabled={ mode === "view" } onChange={ ChangeHandle }></textarea>
                     </div>
                 </div>
                 <div className = "row">
-                    <div className = "col-12">
+                    <div className = "status col-6"> 
                         <span className="inner-title">Interviews:</span>
-                        <InterviewTable initInterviews = { application.interviews }/>
+                    </div>
+                    <div className = "col-6 text-end">
+                        <AddButton add = { addInterview }/>
+                    </div>
+                </div>
+                <div className = "row">
+                    <div className = "col-12">
+                        <InterviewTable interviews = { interviews } setInterviews = { setInterviews }/>
                     </div>
                 </div>
             </div>
