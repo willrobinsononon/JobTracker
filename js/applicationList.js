@@ -8,7 +8,8 @@ export default function ApplicationList( props ) {
         fetch('/jobapi/applications.json')
             .then(response => response.json())
             .then(result => {
-                setApplications(result);
+                const reversed = result.reverse();
+                setApplications(reversed);
             })
             .catch(error => {
                 console.log(error);
