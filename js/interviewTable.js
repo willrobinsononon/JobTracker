@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import InterviewTableRow from './interviewTableRow'
 
 export default function InterviewTable({ interviews, setInterviews }) {
-
-    const reversed = interviews.reverse();
     return (
         <table className="table interview-table inner-bdr my-2">
         <thead>
@@ -15,7 +13,7 @@ export default function InterviewTable({ interviews, setInterviews }) {
             </tr>
         </thead>
         <tbody>
-            { reversed.map( interview => <InterviewTableRow key={ interview.id } interview={ interview } interviews = { interviews } setInterviews = { setInterviews }/>) }
+            { interviews.map( interview => <InterviewTableRow key={ interview.id } interview={ interview } interviews = { interviews } setInterviews = { setInterviews }/>) }
         </tbody>
         </table>
     )

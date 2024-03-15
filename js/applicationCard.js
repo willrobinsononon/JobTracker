@@ -56,26 +56,14 @@ export default function ApplicationCard({ application, applications, setApplicat
         }
     }
 
-    function addblahblah() {
-
-        fetch(`jobapi/interviews/`, {
-            method: 'POST',
-            headers: { 'X-CSRFToken': cookie.load("csrftoken"),
-                        'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                scheduled_time: "2000-01-01T00:00:00Z",
-                location: " ",
-                application: application.id
-            })
-          })
-          .then(response => addInterview(response))
-          {/*}.then(result => addInterview.result);*/}
-    }
-
     function addInterview() {
+        var id = 0
+        if ( interviews.length > 0 ) {
+            id = interviews[interviews.length - 1].id + 1
+        }
 
         var newInterview = {
-            id: interviews[interviews.length - 1].id + 1,
+            id: id,
             scheduled_time: new Date().toJSON(),
             location: "",
             notes: "",
