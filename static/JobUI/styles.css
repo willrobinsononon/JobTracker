@@ -58,11 +58,11 @@
 }
 
 .status-App {
-    background-color: lightgrey;
+    background-color: lightblue;
 }
 
 .status-Int {
-    background-color: lightblue;
+    background-color: rgb(255, 238, 110);
 }
 
 .status-Suc {
@@ -71,6 +71,10 @@
 
 .status-Uns {
     background-color: indianred;
+}
+
+.edit-mode {
+    background-color: rgb(245, 245, 245)
 }
 
 .inner-title {
@@ -95,7 +99,7 @@
 }
 
 .status-select {
-    width: 50%;
+    width: 9em;
     
 }
 
@@ -134,5 +138,13 @@ textarea:disabled {
 }
 
 .buttons {
+    display: inline-block;
+}
+
+td > .buttons {
     display: flex;
+}
+
+.buttons > * {
+    margin: 2px;
 }

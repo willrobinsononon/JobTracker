@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ButtonToggle from './buttonToggle'
-import DeleteButton from './deleteButton';
 import cookie from "react-cookies";
 import DatePicker, { registerLocale } from "react-datepicker";
 import enGB from "date-fns/locale/en-GB";
@@ -63,7 +62,7 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
         <td><DatePicker selected={intDate} locale={'en-GB'} onChange={(date) => setIntDate(date)} dateFormat="dd/MM/yy h:mm aa"  showTimeInput disabled={ mode === "view" }/></td>
         <td><input type="text" name="location" className="int-input" value={ intData.location } disabled={ mode === "view" } onChange={ ChangeHandle }></input></td>
         <td><input type="text" name="notes" className="int-input" value={ intData.notes } disabled={ mode === "view" } onChange={ ChangeHandle }></input></td>
-        <td><div className = "buttons"><ButtonToggle mode = { mode } setMode = { setMode } submit = { submit }/><DeleteButton mode = { mode } onDelete = { onDelete }/></div></td>
+        <td><ButtonToggle mode = { mode } setMode = { setMode } submit = { submit } onDelete = { onDelete }/></td>
         </tr>
     )
 }
