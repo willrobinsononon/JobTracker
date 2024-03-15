@@ -5,7 +5,8 @@ import SubmitButton from './submitButton';
 import StatusColumn from './statusColumn';
 import cookie from "react-cookies";
 
-export default function ApplicationCard({ application }) {
+
+export default function ApplicationCard({ application, setApplications }) {
     
     const appInitialValues = {
         job_title: application.job_title,
@@ -85,7 +86,7 @@ export default function ApplicationCard({ application }) {
                 <div className = "row">
                     <div className = "col-12">
                         <span className="inner-title">Interviews:</span>
-                        <InterviewTable interviews = { application.interviews }/>
+                        <InterviewTable initInterviews = { application.interviews }/>
                     </div>
                 </div>
             </div>

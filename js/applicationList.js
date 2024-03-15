@@ -16,6 +16,6 @@ export default function ApplicationList( props ) {
     }, []);
 
     return (
-        applications.map( application => <ApplicationCard key={ application.id } application={ application } />)
+        applications.map( application => <ApplicationCard key={ application.id } application={ application } setApplications = { setApplications }/>)
     )
 }

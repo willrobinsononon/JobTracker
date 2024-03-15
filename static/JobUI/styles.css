@@ -132,3 +132,7 @@ textarea:disabled {
     background-color: white;
     color: inherit;
 }
+
+.buttons {
+    display: flex;
+}
