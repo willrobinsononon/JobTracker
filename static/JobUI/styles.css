@@ -87,6 +87,16 @@
     cursor: pointer;
 }
 
+.big-icon-button {
+    height: 2.4em;
+    cursor: pointer;
+}
+
+.big-add-button-container {
+    width: 100%;
+    text-align: right;
+}
+
 .edit-input-text {
     border-radius: 5px;
     border-width: 0px;

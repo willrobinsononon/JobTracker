@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import InterviewTableRow from './interviewTableRow'
 
-export default function InterviewTable({ interviews, setInterviews }) {
+export default function InterviewTable({ interviews, setInterviews, applicationId }) {
     return (
         <table className="table interview-table inner-bdr my-2">
         <thead>
@@ -13,7 +13,7 @@ export default function InterviewTable({ interviews, setInterviews }) {
             </tr>
         </thead>
         <tbody>
-            { interviews.map( interview => <InterviewTableRow key={ interview.id } interview={ interview } interviews = { interviews } setInterviews = { setInterviews }/>) }
+            { interviews.map( interview => <InterviewTableRow key={ interview.id } interview={ interview } interviews = { interviews } setInterviews = { setInterviews } applicationId = { applicationId }/>) }
         </tbody>
         </table>
     )

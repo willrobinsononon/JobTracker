@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ApplicationCard from './applicationCard'
+import ApplicationCard from './applicationCard';
+import BigAddButton from './bigAddButton';
 
 export default function ApplicationList( props ) {
     const [applications, setApplications] = useState([]);
@@ -16,7 +17,31 @@ export default function ApplicationList( props ) {
             });
     }, []);
 
+    function addApplication() {
+        var id = 0
+        if ( applications.length > 0 ) {
+            id = applications[0].id + 1
+        }
+
+        var newApplication = {
+            id: id,
+            job_title: "Job Title",
+            employer: "Employer",
+            status: "Applied",
+            notes: "",
+            interviews: [],
+            new: true
+        }
+        setApplications([newApplication, ...applications])
+    }
+
     return (
-        applications.map( application => <ApplicationCard key={ application.id } application={ application } applications = { applications } setApplications = { setApplications }/>)
+        <div className = "application-list">
+            <div className="big-add-button-container">
+                <BigAddButton add = { addApplication }/>
+            </div>
+            { applications.map( application => <ApplicationCard key={ application.id } application={ application } applications = { applications } setApplications = { setApplications }/>) }
+        </div>
+        
     )
 }

@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 
-export default function InterviewTableRow({ interview, interviews, setInterviews }) {
+export default function InterviewTableRow({ interview, interviews, setInterviews, applicationId}) {
 
     const intInitialValues = {
         location: interview.location,
@@ -32,7 +32,7 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
             return false
         }
 
-        if ('new' in interview) {
+        if ('new' in interview && interview['new'] === true) {
             fetch(`jobapi/interviews/`, {
                 method: 'POST',
                 headers: { 'X-CSRFToken': cookie.load("csrftoken"),
@@ -41,11 +41,17 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
                     scheduled_time: intDate,
                     location: intData.location,
                     notes: intData.notes,
-                    application: application.id
+                    application: applicationId
                 })
               })
-              .then(response => response.json())
-              .then(result => {console.log(result)});
+            .then(response => {
+                if (response.status === 201) {
+                    interview.new = false;
+                }
+                response.json().then(result => {
+                    console.log(result)
+                    interview.id = result.id;
+                })});
         }
         else {
             fetch(`jobapi/interviews/${interview.id}/`, {
@@ -56,7 +62,8 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
                     id: interview.id,
                     scheduled_time: intDate,
                     location: intData.location,
-                    notes: intData.notes
+                    notes: intData.notes,
+                    application: applicationId
                 })
             })
             .then(response => response.json())
@@ -93,7 +100,17 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
 
     return (
         <tr className = { mode }>
-        <td><DatePicker selected={intDate} locale={'en-GB'} onChange={(date) => setIntDate(date)} dateFormat="dd/MM/yy h:mm aa"  showTimeInput disabled={ mode === "view" }/></td>
+        <td><DatePicker 
+            selected={intDate} 
+            locale={'en-GB'} 
+            onChange={(date) => setIntDate(date)} 
+            dateFormat="dd/MM/yy h:mm aa"  
+            showTimeInput 
+            disabled={ mode === "view" }
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            /></td>
         <td><input type="text" name="location" className="int-input" value={ intData.location } disabled={ mode === "view" } onChange={ ChangeHandle }></input></td>
         <td><input type="text" name="notes" className="int-input" value={ intData.notes } disabled={ mode === "view" } onChange={ ChangeHandle }></input></td>
         <td><ButtonToggle mode = { mode } setMode = { setMode } submit = { submit } onDelete = { onDelete }/></td>

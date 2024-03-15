@@ -10,35 +10,70 @@ import cookie from "react-cookies";
 export default function ApplicationCard({ application, applications, setApplications }) {
     
     const appInitialValues = {
+        id: application.id,
         job_title: application.job_title,
         employer: application.employer,
         status: application.status,
         notes: application.notes
     };
 
+    var initMode = 'view'
+    if ('new' in application) {
+        initMode = 'edit';
+    }
+
     const [appData, setAppData] = useState(appInitialValues);
-    const [mode, setMode] = useState('view');
+    const [mode, setMode] = useState(initMode);
     const [interviews, setInterviews] = useState(application.interviews);
 
     function submit() {
+        if ( appData.job_title === "" || appData.job_title === "Job Title" ) {
+            alert("You must enter a job title");
+            return false
+        }
+        if ( appData.employer === "" || appData.employer === "Employer" ) {
+            alert("You must enter an employer");
+            return false
+        }
 
-        fetch(`jobapi/applications/${application.id}/`, {
-            method: 'PUT',
-            headers: { 'X-CSRFToken': cookie.load("csrftoken"),
-                        'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                id: application.id,
-                date_applied: application.date_applied,
-                job_title: appData.job_title,
-                employer: appData.employer,
-                notes: appData.notes,
-                followed_up: application.followed_up,
-                status: appData.status
+        if ('new' in application && application['new'] === true) {
+            fetch(`jobapi/applications/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': cookie.load("csrftoken"),
+                            'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    job_title: appData.job_title,
+                    employer: appData.employer,
+                    notes: appData.notes,
+                    status: appData.status
+                })})
+                .then(response => {
+                    if (response.status === 201) {
+                        application.new = false;
+                    }
+                    response.json().then(result => {
+                        console.log(result)
+                        setAppData({ ...appData, ['id']: result.id })
+                    })});
+        }
+        else {
+            fetch(`jobapi/applications/${application.id}/`, {
+                method: 'PUT',
+                headers: { 'X-CSRFToken': cookie.load("csrftoken"),
+                            'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    id: appData.id,
+                    date_applied: application.date_applied,
+                    job_title: appData.job_title,
+                    employer: appData.employer,
+                    notes: appData.notes,
+                    followed_up: application.followed_up,
+                    status: appData.status
+                })
             })
-          })
-          {/*}.then(response => response.json())
-        .then(result => {console.log(result)});*/}
-
+            {/*}.then(response => response.json())
+            .then(result => {console.log(result)});*/}
+        }
         return true
     }
 
@@ -115,7 +150,7 @@ export default function ApplicationCard({ application, applications, setApplicat
                 </div>
                 <div className = "row">
                     <div className = "col-12">
-                        <InterviewTable interviews = { interviews } setInterviews = { setInterviews }/>
+                        <InterviewTable interviews = { interviews } setInterviews = { setInterviews } applicationId = { application.id }/>
                     </div>
                 </div>
             </div>

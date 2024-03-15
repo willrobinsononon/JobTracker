@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 class Application(models.Model):
 
@@ -9,7 +10,7 @@ class Application(models.Model):
     "UNS": "Unsuccessful"
     }
     
-    date_applied = models.DateField()
+    date_applied = models.DateField(default=datetime.date.today)
     job_title = models.CharField(max_length = 32)
     employer = models.CharField(max_length = 32)
     notes = models.TextField(blank=True)
