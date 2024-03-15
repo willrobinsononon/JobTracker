@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 export default function StatusColumn({ mode, appData, setAppData }) {
     
     function getStatusClass(status) {
-        if (status === "Unsuccessful" || status === "Success") {
+        if (status === "Unsuccessful" || status === "Successful") {
             return "status-final"
         }
         else {
