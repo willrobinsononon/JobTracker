@@ -7,9 +7,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 
-export default function InterviewTableRow({ interview, interviews, setInterviews, applicationId}) {
+export default function InterviewTableRow({ interview, interviews, setInterviews, applicationId, userInterviews, setUserInterviews, formAlert, setFormAlert }) {
 
-    const intInitialValues = {
+    var intInitialValues = {
+        id: interview.id,
         location: interview.location,
         notes: interview.notes
     };
@@ -17,22 +18,52 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
     var initMode = 'view'
     if ('new' in interview) {
         initMode = 'edit';
+        intInitialValues = {
+            id: interview.id,
+            location: interview.location,
+            notes: interview.notes,
+            new: true
+        };
     }
 
 
     const [intData, setIntData] = useState(intInitialValues);
     const [mode, setMode] = useState(initMode);
     const [intDate, setIntDate] = useState(new Date(interview.scheduled_time));
+    
 
     registerLocale("en-GB", enGB);
 
     function submit() {
         if ( intData.location === "" ) {
-            alert("Location can't be empty");
+            setFormAlert({alert: true, message: "Location can't be empty"});
             return false
         }
 
-        if ('new' in interview && interview['new'] === true) {
+        var clash = false;
+        var intClash = {}
+        var intClashTime = new Date()
+        const msHour = 60*60*1000
+        const intDatems = intDate.getTime()
+        userInterviews.map( interview => {
+            if (interview.id != intData.id) {
+                const compDate = new Date(interview.scheduled_time);
+                const compDatems = compDate.getTime()
+                if (compDatems > intDatems  - msHour && compDatems < intDatems + msHour) {
+                    clash = true
+                    intClash = interview
+                    intClashTime = compDate
+                }
+            }
+        })
+
+        if (clash) {
+            setFormAlert({alert: true, message: `Clash! You already have an interview at ${intClash.location} at ${intClashTime.toLocaleString()}`});
+            return false
+        }
+
+
+        if ('new' in intData ) {
             fetch(`jobapi/interviews/`, {
                 method: 'POST',
                 headers: { 'X-CSRFToken': cookie.load("csrftoken"),
@@ -46,20 +77,23 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
               })
             .then(response => {
                 if (response.status === 201) {
-                    interview.new = false;
+                    response.json().then(result => {
+                        const {new: _, ...rest} = intData;
+                        setFormAlert({alert: false, message: ""});
+                        updateInterviewList (userInterviews, rest, result.id, setUserInterviews)
+                        updateInterviewList (interviews, rest, result.id, setInterviews)
+                        setIntData({ ...rest, ['id']: result.id, ['scheduled_time']: intDate });
+                    })
                 }
-                response.json().then(result => {
-                    console.log(result)
-                    interview.id = result.id;
-                })});
+            });
         }
         else {
-            fetch(`jobapi/interviews/${interview.id}/`, {
+            fetch(`jobapi/interviews/${intData.id}/`, {
                 method: 'PUT',
                 headers: { 'X-CSRFToken': cookie.load("csrftoken"),
                             'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    id: interview.id,
+                    id: intData.id,
                     scheduled_time: intDate,
                     location: intData.location,
                     notes: intData.notes,
@@ -73,13 +107,12 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
     }
 
     function onDelete() {
-
-        if ( intData.location === "" || intDate < new Date().toJSON()) {
+        if ('new' in intData ) {
             removeRow(204)
             return 
         }
 
-        fetch(`jobapi/interviews/${interview.id}/`, {
+        fetch(`jobapi/interviews/${intData.id}/`, {
             method: 'DELETE',
             headers: { 'X-CSRFToken': cookie.load("csrftoken")},
           })
@@ -88,7 +121,9 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
 
     function removeRow( status ) {
         if ( status === 204 ) {
-            setInterviews(interviews.filter((item) => item.id !== interview.id))
+            setInterviews(interviews.filter((item) => item.id !== intData.id))
+            setUserInterviews(userInterviews.filter((item) => item.id !== intData.id))
+            setFormAlert({alert: false, message: ""});
         }
     }
 
@@ -98,8 +133,15 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
         }
     };
 
+    function updateInterviewList (interviewList, data, newId, updateFunction) {
+        let tempInterviewList = [...interviewList] 
+        let intIndex = tempInterviewList.findIndex(obj => obj.id == intData.id);
+        tempInterviewList[intIndex] = { ...data, ['id']: newId, ['scheduled_time']: intDate }
+        updateFunction(tempInterviewList)
+    }
+
     return (
-        <tr className = { mode }>
+        <tr className = { mode } id = { intData.id }>
         <td><DatePicker 
             selected={intDate} 
             locale={'en-GB'} 
@@ -111,8 +153,8 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
             timeFormat="HH:mm"
             timeIntervals={15}
             /></td>
-        <td><input type="text" name="location" className="int-input" value={ intData.location } disabled={ mode === "view" } onChange={ ChangeHandle }></input></td>
-        <td><input type="text" name="notes" className="int-input" value={ intData.notes } disabled={ mode === "view" } onChange={ ChangeHandle }></input></td>
+        <td><input type="text" name="location" className="int-input text-ellipsis" value={ intData.location } disabled={ mode === "view" } onChange={ ChangeHandle }></input></td>
+        <td><input type="text" name="notes" className="int-input text-ellipsis" value={ intData.notes } disabled={ mode === "view" } onChange={ ChangeHandle }></input></td>
         <td><ButtonToggle mode = { mode } setMode = { setMode } submit = { submit } onDelete = { onDelete }/></td>
         </tr>
     )

@@ -158,3 +158,18 @@ td > .buttons {
 .buttons > * {
     margin: 2px;
 }
+
+input:-webkit-autofill,
+  input:-webkit-autofill:focus {
+    transition: background-color 0s 600000s, color 0s 600000s !important;
+  }
+
+.text-ellipsis {
+    text-overflow: ellipsis;
+}
+
+.my-alert {
+    margin-bottom: 0px !important;
+    border-radius: 10px !important;
+    font-weight: 600;
+}

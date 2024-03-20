@@ -5,9 +5,12 @@ import EditingFlag from './editingFlag';
 import AddButton from './addButton';
 import StatusColumn from './statusColumn';
 import cookie from "react-cookies";
+import Alert from './Alert'
+import FollowUpAlert from './followUpAlert'
 
 
-export default function ApplicationCard({ application, applications, setApplications }) {
+
+export default function ApplicationCard({ application, applications, setApplications, userInterviews, setUserInterviews }) {
     
     const appInitialValues = {
         id: application.id,
@@ -25,14 +28,18 @@ export default function ApplicationCard({ application, applications, setApplicat
     const [appData, setAppData] = useState(appInitialValues);
     const [mode, setMode] = useState(initMode);
     const [interviews, setInterviews] = useState(application.interviews);
+    const [formAlert, setFormAlert] = useState({alert: false, message: ""});
+
+    /*setUserInterviews(...userInterviews, ...application.interviews)*/
+    
 
     function submit() {
         if ( appData.job_title === "" || appData.job_title === "Job Title" ) {
-            alert("You must enter a job title");
+            setFormAlert({alert: true, message: "You must enter a job title"});
             return false
         }
         if ( appData.employer === "" || appData.employer === "Employer" ) {
-            alert("You must enter an employer");
+            setFormAlert({alert: true, message: "You must enter an employer"});
             return false
         }
 
@@ -50,14 +57,15 @@ export default function ApplicationCard({ application, applications, setApplicat
                 .then(response => {
                     if (response.status === 201) {
                         application.new = false;
+                        setFormAlert({alert: false, message: ""});
+                        response.json().then(result => {
+                            setAppData({ ...appData, ['id']: result.id })
+                        })
                     }
-                    response.json().then(result => {
-                        console.log(result)
-                        setAppData({ ...appData, ['id']: result.id })
-                    })});
+                });
         }
         else {
-            fetch(`jobapi/applications/${application.id}/`, {
+            fetch(`jobapi/applications/${appData.id}/`, {
                 method: 'PUT',
                 headers: { 'X-CSRFToken': cookie.load("csrftoken"),
                             'Content-Type': 'application/json'},
@@ -78,16 +86,21 @@ export default function ApplicationCard({ application, applications, setApplicat
     }
 
     function onDelete() {
-        fetch(`jobapi/applications/${application.id}/`, {
+        if ('new' in application && application['new'] === true) {
+            removeApplication(204)
+            return 
+        }
+
+        fetch(`jobapi/applications/${appData.id}/`, {
             method: 'DELETE',
             headers: { 'X-CSRFToken': cookie.load("csrftoken")},
           })
-          .then(response => removeApplication(response))
+          .then(response => removeApplication(response.status))
     }
 
-    function removeApplication( response ) {
-        if ( response.status === 204 ) {
-            setApplications(applications.filter((item) => item.id !== application.id))
+    function removeApplication( status ) {
+        if ( status === 204 ) {
+            setApplications(applications.filter((item) => item.id !== appData.id))
         }
     }
 
@@ -102,11 +115,12 @@ export default function ApplicationCard({ application, applications, setApplicat
             scheduled_time: new Date().toJSON(),
             location: "",
             notes: "",
-            application: application.id,
+            application: appData.id,
             new: true
         }
 
         setInterviews([ ...interviews, newInterview ])
+        setUserInterviews([ ...userInterviews, newInterview ])
     }
 
     const ChangeHandle = (event) => {
@@ -116,41 +130,56 @@ export default function ApplicationCard({ application, applications, setApplicat
       };
  
     return (
-        <div className = {"application-container container-fluid my-2 " + (mode === 'view' ? "status-" + appData.status.slice(0, 3) : "edit-mode") } data-app_id={ application.id }>
-            <div className = "application-header row">
-                <input type="text" className = "job-title col-6 edit-input-text" name="job_title" value={ appData.job_title } disabled={ mode === "view" } onChange={ ChangeHandle }></input>
-                <input type="text" className = "employer-name col-6 mt-auto text-end edit-input-text" name="employer" value={ appData.employer } disabled={ mode === "view" } onChange={ ChangeHandle }></input>
+        <div className= "container-fluid my-2">
+            <div className = "alertContainer">
+                <FollowUpAlert application = { application } appData = { appData }/>
+                <Alert alert = { formAlert } alertClass = { "alert-danger my-alert" }/>
             </div>
-            <div className = "application-body">
-                <div className = "row">
-                    <StatusColumn mode = { mode } appData = { appData } setAppData = { setAppData }/>
-                    <div className = "col-6 text-end">
-                        <EditingFlag mode = { mode }/>
-                        <ButtonToggle mode = { mode } setMode = { setMode } submit = { submit } onDelete = { onDelete }/>
-                    </div>
+            <div className = {"application-container container-fluid " + (mode === 'view' ? "status-" + appData.status.slice(0, 3) : "edit-mode") } data-app_id={ appData.id }>
+                <div className = "application-header row">
+                    <input type="text" className = "job-title col-6 edit-input-text text-ellipsis" name="job_title" value={ appData.job_title } disabled={ mode === "view" } onChange={ ChangeHandle }></input>
+                    <input type="text" className = "employer-name col-6 mt-auto text-end edit-input-text text-ellipsis" name="employer" value={ appData.employer } disabled={ mode === "view" } onChange={ ChangeHandle }></input>
                 </div>
-                <hr className="mt-3 mx-2" />
-                <div className = "row my-2">
-                    <div className = "status col-12"> 
-                        <span className="inner-title">Notes:</span>
+                <div className = "application-body">
+                    <div className = "row">
+                        <StatusColumn mode = { mode } appData = { appData } setAppData = { setAppData }/>
+                        <div className = "col-6 text-end">
+                            <EditingFlag mode = { mode }/>
+                            <ButtonToggle mode = { mode } setMode = { setMode } submit = { submit } onDelete = { onDelete }/>
+                        </div>
                     </div>
-                </div>
-                <div className = "row my-2">
-                    <div className = "status col-12">
-                        <textarea className = "notes-textarea inner-bdr my-2" name="notes" value={ appData.notes } disabled={ mode === "view" } onChange={ ChangeHandle }></textarea>
+                    <hr className="mt-3 mx-2" />
+                    <div className = "row my-2">
+                        <div className = "status col-12"> 
+                            <span className="inner-title">Notes:</span>
+                        </div>
                     </div>
-                </div>
-                <div className = "row">
-                    <div className = "status col-6"> 
-                        <span className="inner-title">Interviews:</span>
+                    <div className = "row my-2">
+                        <div className = "status col-12">
+                            <textarea className = "notes-textarea inner-bdr my-2" name="notes" value={ appData.notes } disabled={ mode === "view" } onChange={ ChangeHandle }></textarea>
+                        </div>
                     </div>
-                    <div className = "col-6 text-end">
-                        <AddButton add = { addInterview }/>
+                    <div className = "row">
+                        <div className = "status col-6"> 
+                            <span className="inner-title">Interviews:</span>
+                        </div>
+                        <div className = "col-6 text-end">
+                            <AddButton add = { addInterview } isNew = { ('new' in application && application['new'] === true) }/>
+                        </div>
                     </div>
-                </div>
-                <div className = "row">
-                    <div className = "col-12">
-                        <InterviewTable interviews = { interviews } setInterviews = { setInterviews } applicationId = { application.id }/>
+                    <div className = "row">
+                        <div className = "col-12">
+                            <InterviewTable 
+                                interviews = { interviews } 
+                                setInterviews = { setInterviews } 
+                                applicationId = { appData.id }
+                                userInterviews = { userInterviews } 
+                                setUserInterviews = { setUserInterviews }
+                                formAlert = {formAlert }
+                                setFormAlert = { setFormAlert }
+
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

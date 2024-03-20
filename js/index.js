@@ -1,8 +1,8 @@
-import React from 'react';
-import ReactDOM from "react-dom";
-import ApplicationList from './applicationList'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import JobtrackerApp from './jobtrackerApp'
 
-ReactDOM.render(
-  < ApplicationList />,
-  document.getElementById('root')
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  < JobtrackerApp />
 );

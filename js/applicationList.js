@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import ApplicationCard from './applicationCard';
 import BigAddButton from './bigAddButton';
 
-export default function ApplicationList( props ) {
+export default function ApplicationList({ userInterviews, setUserInterviews }) {
     const [applications, setApplications] = useState([]);
 
     useEffect(() => {
         fetch('/jobapi/applications.json')
             .then(response => response.json())
             .then(result => {
+                var allInterviews = []
+                result.map(application => allInterviews = [...allInterviews, ...application.interviews])
+                setUserInterviews(allInterviews)
                 const reversed = result.reverse();
                 setApplications(reversed);
             })
@@ -40,7 +43,15 @@ export default function ApplicationList( props ) {
             <div className="big-add-button-container">
                 <BigAddButton add = { addApplication }/>
             </div>
-            { applications.map( application => <ApplicationCard key={ application.id } application={ application } applications = { applications } setApplications = { setApplications }/>) }
+            { applications.map( application =>
+                <ApplicationCard 
+                    key={ application.id } 
+                    application={ application } 
+                    applications = { applications } 
+                    setApplications = { setApplications }
+                    userInterviews = { userInterviews } 
+                    setUserInterviews = { setUserInterviews }
+                />)}
         </div>
         
     )
