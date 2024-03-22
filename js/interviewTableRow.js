@@ -7,30 +7,22 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 
-export default function InterviewTableRow({ interview, interviews, setInterviews, applicationId, userInterviews, setUserInterviews, formAlert, setFormAlert }) {
+export default function InterviewTableRow({ interview, interviews, setInterviews, userInterviews, setUserInterviews, setFormAlert }) {
 
-    var intInitialValues = {
-        id: interview.id,
-        location: interview.location,
-        notes: interview.notes
-    };
-    
+    const intInitialValues = {...interview, ['scheduled_time']: new Date(interview.scheduled_time)}
+
     var initMode = 'view'
     if ('new' in interview) {
         initMode = 'edit';
-        intInitialValues = {
-            id: interview.id,
-            location: interview.location,
-            notes: interview.notes,
-            new: true
-        };
-    }
-
-
+    };
+    
     const [intData, setIntData] = useState(intInitialValues);
     const [mode, setMode] = useState(initMode);
-    const [intDate, setIntDate] = useState(new Date(interview.scheduled_time));
-    
+
+    useEffect(() => {
+        updateList (userInterviews, intInitialValues, intInitialValues.id, setUserInterviews);
+        updateList (interviews, intInitialValues, intInitialValues.id, setInterviews);
+    }, []);
 
     registerLocale("en-GB", enGB);
 
@@ -40,16 +32,14 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
             return false
         }
 
-        var clash = false;
-        var intClash = {}
-        var intClashTime = new Date()
+        var clash, intClash, intClashTime = [false, {}, new Date()];
         const msHour = 60*60*1000
-        const intDatems = intDate.getTime()
+        const intDatems = intData.scheduled_time.getTime()
         userInterviews.map( interview => {
             if (interview.id != intData.id) {
                 const compDate = new Date(interview.scheduled_time);
                 const compDatems = compDate.getTime()
-                if (compDatems > intDatems  - msHour && compDatems < intDatems + msHour) {
+                if (compDatems > intDatems  - msHour && compDatems < intDatems + 2 * msHour) {
                     clash = true
                     intClash = interview
                     intClashTime = compDate
@@ -69,10 +59,10 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
                 headers: { 'X-CSRFToken': cookie.load("csrftoken"),
                             'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    scheduled_time: intDate,
+                    scheduled_time: intData.scheduled_time,
                     location: intData.location,
                     notes: intData.notes,
-                    application: applicationId
+                    application: intData.application
                 })
               })
             .then(response => {
@@ -80,9 +70,9 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
                     response.json().then(result => {
                         const {new: _, ...rest} = intData;
                         setFormAlert({alert: false, message: ""});
-                        updateInterviewList (userInterviews, rest, result.id, setUserInterviews)
-                        updateInterviewList (interviews, rest, result.id, setInterviews)
-                        setIntData({ ...rest, ['id']: result.id, ['scheduled_time']: intDate });
+                        updateList (userInterviews, rest, result.id, setUserInterviews)
+                        updateList (interviews, rest, result.id, setInterviews)
+                        setIntData({ ...rest, ['id']: result.id });
                     })
                 }
             });
@@ -92,16 +82,15 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
                 method: 'PUT',
                 headers: { 'X-CSRFToken': cookie.load("csrftoken"),
                             'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    id: intData.id,
-                    scheduled_time: intDate,
-                    location: intData.location,
-                    notes: intData.notes,
-                    application: applicationId
-                })
+                body: JSON.stringify(intData)
             })
-            .then(response => response.json())
-            .then(result => {console.log(result)});
+            .then(response => {
+                if (response.status === 200) {
+                    setFormAlert({alert: false, message: ""});
+                    updateList (userInterviews, intData, intData.id, setUserInterviews);
+                    updateList (interviews, intData, intData.id, setInterviews);
+                }
+            });
         }
         return true
     }
@@ -133,19 +122,23 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
         }
     };
 
-    function updateInterviewList (interviewList, data, newId, updateFunction) {
-        let tempInterviewList = [...interviewList] 
+    function updateList (interviewList, data, newId, updateFunction) {
+        let tempInterviewList = [...interviewList];
         let intIndex = tempInterviewList.findIndex(obj => obj.id == intData.id);
-        tempInterviewList[intIndex] = { ...data, ['id']: newId, ['scheduled_time']: intDate }
-        updateFunction(tempInterviewList)
+        let intToSwapIndex = tempInterviewList.findIndex(obj => obj.id == newId);
+        if (intToSwapIndex > -1) {
+            tempInterviewList[intToSwapIndex] = { ...data, ['id']: intData.id, ['scheduled_time']: intData.scheduled_time };
+        }
+        tempInterviewList[intIndex] = { ...data, ['id']: newId, ['scheduled_time']: intData.scheduled_time };
+        updateFunction(tempInterviewList);
     }
 
     return (
-        <tr className = { mode } id = { intData.id }>
+        <tr className = { mode }>
         <td><DatePicker 
-            selected={intDate} 
+            selected={intData.scheduled_time} 
             locale={'en-GB'} 
-            onChange={(date) => setIntDate(date)} 
+            onChange={(date) => setIntData({...intData, ['scheduled_time']: date})} 
             dateFormat="dd/MM/yy h:mm aa"  
             showTimeInput 
             disabled={ mode === "view" }

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ApplicationCard from './applicationCard';
-import BigAddButton from './bigAddButton';
 
-export default function ApplicationList({ userInterviews, setUserInterviews }) {
-    const [applications, setApplications] = useState([]);
+export default function ApplicationList({ userInterviews, setUserInterviews, applications, setApplications }) {
+    
 
     useEffect(() => {
         fetch('/jobapi/applications.json')
@@ -41,7 +40,7 @@ export default function ApplicationList({ userInterviews, setUserInterviews }) {
     return (
         <div className = "application-list">
             <div className="big-add-button-container">
-                <BigAddButton add = { addApplication }/>
+                <img className="big-icon-button" src="/static/assets/big_add.png" title="add button" onClick={ addApplication }></img>
             </div>
             { applications.map( application =>
                 <ApplicationCard 

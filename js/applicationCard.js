@@ -11,14 +11,8 @@ import FollowUpAlert from './followUpAlert'
 
 
 export default function ApplicationCard({ application, applications, setApplications, userInterviews, setUserInterviews }) {
-    
-    const appInitialValues = {
-        id: application.id,
-        job_title: application.job_title,
-        employer: application.employer,
-        status: application.status,
-        notes: application.notes
-    };
+
+    const {['interviews']: _, ...appInitialValues} = application;
 
     var initMode = 'view'
     if ('new' in application) {
@@ -30,9 +24,6 @@ export default function ApplicationCard({ application, applications, setApplicat
     const [interviews, setInterviews] = useState(application.interviews);
     const [formAlert, setFormAlert] = useState({alert: false, message: ""});
 
-    /*setUserInterviews(...userInterviews, ...application.interviews)*/
-    
-
     function submit() {
         if ( appData.job_title === "" || appData.job_title === "Job Title" ) {
             setFormAlert({alert: true, message: "You must enter a job title"});
@@ -42,8 +33,8 @@ export default function ApplicationCard({ application, applications, setApplicat
             setFormAlert({alert: true, message: "You must enter an employer"});
             return false
         }
-
-        if ('new' in application && application['new'] === true) {
+        
+        if ('new' in appData) {
             fetch(`jobapi/applications/`, {
                 method: 'POST',
                 headers: { 'X-CSRFToken': cookie.load("csrftoken"),
@@ -56,10 +47,10 @@ export default function ApplicationCard({ application, applications, setApplicat
                 })})
                 .then(response => {
                     if (response.status === 201) {
-                        application.new = false;
+                        const {new: _, ...rest} = appData;
                         setFormAlert({alert: false, message: ""});
                         response.json().then(result => {
-                            setAppData({ ...appData, ['id']: result.id })
+                            setAppData({ ...rest, ['id']: result.id })
                         })
                     }
                 });
@@ -78,15 +69,13 @@ export default function ApplicationCard({ application, applications, setApplicat
                     followed_up: application.followed_up,
                     status: appData.status
                 })
-            })
-            {/*}.then(response => response.json())
-            .then(result => {console.log(result)});*/}
+            });
         }
         return true
     }
 
     function onDelete() {
-        if ('new' in application && application['new'] === true) {
+        if ('new' in application ) {
             removeApplication(204)
             return 
         }
@@ -100,7 +89,8 @@ export default function ApplicationCard({ application, applications, setApplicat
 
     function removeApplication( status ) {
         if ( status === 204 ) {
-            setApplications(applications.filter((item) => item.id !== appData.id))
+            interviews.map((interview) => setUserInterviews(userInterviews.filter((item) => item.id !== interview.id)));
+            setApplications(applications.filter((item) => item.id !== appData.id));
         }
     }
 
@@ -112,7 +102,7 @@ export default function ApplicationCard({ application, applications, setApplicat
 
         var newInterview = {
             id: id,
-            scheduled_time: new Date().toJSON(),
+            scheduled_time: new Date(),
             location: "",
             notes: "",
             application: appData.id,
@@ -120,7 +110,6 @@ export default function ApplicationCard({ application, applications, setApplicat
         }
 
         setInterviews([ ...interviews, newInterview ])
-        setUserInterviews([ ...userInterviews, newInterview ])
     }
 
     const ChangeHandle = (event) => {
@@ -128,7 +117,7 @@ export default function ApplicationCard({ application, applications, setApplicat
             setAppData({ ...appData, [event.target.name]: event.target.value });
         }
       };
- 
+
     return (
         <div className= "container-fluid my-2">
             <div className = "alertContainer">
@@ -136,8 +125,8 @@ export default function ApplicationCard({ application, applications, setApplicat
                 <Alert alert = { formAlert } alertClass = { "alert-danger my-alert" }/>
             </div>
             <div className = {"application-container container-fluid " + (mode === 'view' ? "status-" + appData.status.slice(0, 3) : "edit-mode") } data-app_id={ appData.id }>
-                <div className = "application-header row">
-                    <input type="text" className = "job-title col-6 edit-input-text text-ellipsis" name="job_title" value={ appData.job_title } disabled={ mode === "view" } onChange={ ChangeHandle }></input>
+                <div className = "row">
+                    <input type="text" className = "my-title col-6 edit-input-text text-ellipsis" name="job_title" value={ appData.job_title } disabled={ mode === "view" } onChange={ ChangeHandle }></input>
                     <input type="text" className = "employer-name col-6 mt-auto text-end edit-input-text text-ellipsis" name="employer" value={ appData.employer } disabled={ mode === "view" } onChange={ ChangeHandle }></input>
                 </div>
                 <div className = "application-body">
@@ -164,20 +153,17 @@ export default function ApplicationCard({ application, applications, setApplicat
                             <span className="inner-title">Interviews:</span>
                         </div>
                         <div className = "col-6 text-end">
-                            <AddButton add = { addInterview } isNew = { ('new' in application && application['new'] === true) }/>
+                            <AddButton add = { addInterview } isNew = { ('new' in application) }/>
                         </div>
                     </div>
                     <div className = "row">
                         <div className = "col-12">
                             <InterviewTable 
                                 interviews = { interviews } 
-                                setInterviews = { setInterviews } 
-                                applicationId = { appData.id }
+                                setInterviews = { setInterviews }
                                 userInterviews = { userInterviews } 
                                 setUserInterviews = { setUserInterviews }
-                                formAlert = {formAlert }
                                 setFormAlert = { setFormAlert }
-
                             />
                         </div>
                     </div>

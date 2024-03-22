@@ -21,13 +21,17 @@
     padding: 5px 0px;
 }
 
+.app-container {
+    display: flex;
+}
+
 .application-container {
     border: 1px solid lightgrey;
     border-radius: 10px;
     box-shadow: 1px 1px 3px lightgrey;
 }
 
-.job-title {
+.my-title {
     font-size: 2em;
     font-weight: 600;
 }
@@ -94,7 +98,7 @@
 
 .big-add-button-container {
     width: 100%;
-    text-align: right;
+    text-align: left;
 }
 
 .edit-input-text {
@@ -172,4 +176,31 @@ input:-webkit-autofill,
     margin-bottom: 0px !important;
     border-radius: 10px !important;
     font-weight: 600;
+}
+
+.react-calendar {
+    font-family: var(--bs-body-font-family) !important;
+}
+
+.interview-day {
+    background-color: lightgreen !important;
+}
+
+.calendar-sidepanel {
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px lightgrey;
+    padding-right: calc(var(--bs-gutter-x)* .1);
+    padding-left: calc(var(--bs-gutter-x)* .1);
+    background-color: rgb(245, 245, 245);
+}
+
+.main-cols {
+    padding-right: calc(var(--bs-gutter-x)* .1) !important;
+    padding-left: calc(var(--bs-gutter-x)* .1) !important;
+}
+
+.react-calendar {
+    margin: auto;
+    border-radius: 5px;
 }

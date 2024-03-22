@@ -35,7 +35,7 @@ export default function FollowUpAlert({ application, appData }) {
     if (followUp) {
         return (
             <div className = { "alert alert-warning my-alert" } role="alert">
-                <span>It's been two weeks since you applied for this job, it's time to follow up!</span><br/>
+                <span>It's been two weeks since you applied for this job, it's time to follow up! Contact the company by email or phone to check on the status of your application.</span><br/>
                 <span>Tick if followed up: </span>
                 <input type="checkbox" onClick = { followedUp }></input>
             </div>
