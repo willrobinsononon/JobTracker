@@ -36,7 +36,7 @@ export default function JobtrackerApp( props ) {
     }
 
     return (
-        <div className = "container-fluid">
+        <div className = "container">
             <div className = "row">
                 <div className = "col main-col">
                     < ApplicationList userInterviews = { userInterviews } setUserInterviews = { setUserInterviews } applications = { applications } setApplications = { setApplications }/>
