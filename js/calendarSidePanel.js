@@ -27,7 +27,7 @@ export default function CalendarSidePanel({ userInterviews, applications }) {
       }
 
     return (
-        <div className = "calendar-sidepanel container-fluid">
+        <div className = "calendar-sidepanel container-fluid my-2">
             <div className = "row">
                 <div className = "col-12">
                   <span className = "my-title">Interview Calendar</span>

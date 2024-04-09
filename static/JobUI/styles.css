@@ -204,3 +204,6 @@ input:-webkit-autofill,
     margin: auto;
     border-radius: 5px;
 }
+.interview-alert {
+    background-color: white !important;
+}

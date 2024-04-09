@@ -6,7 +6,7 @@ export default function InterviewAlert({ interview, applications }) {
     const application = applications.find(instance => instance.id === interview.application)
 
     return (
-        <div className = "alert alert-primary" role="alert">
+        <div className = "alert alert-light interview-alert" role="alert">
                 <strong>{ dateString }<br/>
                 Location: { interview.location }<br/></strong>
                 Job Title: { application.job_title }<br/>
