@@ -106,9 +106,9 @@ export default function ApplicationCard({ application, applications, setApplicat
             location: "",
             notes: "",
             application: appData.id,
-            new: true
+            new: true,
         }
-
+        
         setInterviews([ ...interviews, newInterview ])
     }
 

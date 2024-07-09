@@ -129,7 +129,12 @@ export default function InterviewTableRow({ interview, interviews, setInterviews
         if (intToSwapIndex > -1) {
             tempInterviewList[intToSwapIndex] = { ...data, ['id']: intData.id, ['scheduled_time']: intData.scheduled_time };
         }
-        tempInterviewList[intIndex] = { ...data, ['id']: newId, ['scheduled_time']: intData.scheduled_time };
+        if (intIndex > -1) {
+            tempInterviewList[intIndex] = { ...data, ['id']: newId, ['scheduled_time']: intData.scheduled_time };
+        }
+        else {
+            tempInterviewList = [...tempInterviewList, { ...data, ['id']: newId, ['scheduled_time']: intData.scheduled_time }];
+        }
         updateFunction(tempInterviewList);
     }
 

@@ -4,8 +4,12 @@ import DailyInterviewList from './dailyInterviewList'
 
 export default function CalendarSidePanel({ userInterviews, applications }) {
 
-    const interviewDates = userInterviews.map(({ scheduled_time }) => scheduled_time);
+    const [interviewDates, setInterviewDates] = useState([]);
     const [dailyInterviews, setDailyInterviews] = useState([]);
+
+    useEffect(() => {
+      setInterviewDates(userInterviews.map((interview) => {if (!("new" in interview)) {return interview.scheduled_time}}));
+  }, [userInterviews]);
 
       function onClickDay (value, event) {
         const clickedDay = new Date(value);
